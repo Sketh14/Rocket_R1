@@ -1,0 +1,919 @@
+This wasn't supposed to be a log file, but it turned into one, Huh...
+
+-----------------------------------------------------------------------------------------------------------
+
+MissionControl_txt0
+Pilot_txt0_a
+Pilot_txt0_b
+MissionControl_txt0
+Pilot_txt1
+MissionControl_txt1
+Pilot_txt2_a
+Pilot_txt2_b
+MissionControl_txt2
+Pilot_txt3
+MissionControl_txt3
+Pilot_txt4
+MissionControl_txt4
+Pilot_txt5
+Pilot_txt6
+Pilot_txt7
+
+if WDAppearRight is in WDStuck, and None in WDAppearLeft, and animation is in WDStuck,
+then CannonL will not deactivate even if press button in inspector
+
+removing RotateCanonLeft IsActive property, so that the script will work properly,
+and adding opacity insted of activating the object.
+
+01-11-20
+
+ending opening animations and deactivating dialogue panel,
+return camera to normal state (size as well as position), play anim to normal state,
+have not configured dialogue to appear automatically after door stuck.
+( working, not optimised) returning dialogue back to normal. reset the anim speed back to normal.
+bug - dialogue 3 wont execute normal.
+(fixed) dialogue 0 again was off in the editor.
+bug - could not build (fix) need internet
+
+02-11-2020
+
+build made (bug fixed)
+bug - ship still moving during dialogue sequence.
+
+bug - dialogue panel is too small.
+    :- can be fixed with scale with screen size, dialogue panel and everything goes out of scale.
+	:- temp. fixed with scale with screen size and adjusting the scale of both dialogue panel and hide panel
+	   x - 800, y - 600, match - 1, match width or height (didn't fix the problem in mobile)
+	   tried different settings, didn't fix the problem, going to alternative.
+	:- going with contant physical size. going to alt.
+	:- trying with scale with screen size, x- 2160, y 1080, match - 1
+	
+	   -> dialogue panel:- posy - (-109.2), height - 119.5,
+	   (previous specs:- height - 71.7, posy - (-60))
+	   -> next dialogue button:- height- 60, width - 50, set anchor preset to bottom-right.
+	   (pr. specs:- height- 30, width - 25)
+	   -> adjusted text width and height.
+	   -> dialogues, set anchor preset to center and stretched.
+	:- trying with scale with screen size, x-800, y-600, match-0.5
+	
+	   -> adjusted dialoge panel and dialogue, next dialogue button.
+	   -> works on first try.
+	   -> adjusted hide dialogue
+	   -> dialogues are messed up.
+	   
+-build made
+- spawning Ufo is better in a separate script
+- UfoSpwaner and UfoController different script
+- UfoController will have shooting mechanics.
+- make spawn location of ammo for both enemy and player
+- used polygon collider for player, also gave ufo polygon collider
+- can make a health bar
+- made takeDamage() for both enemy and player
+- ammo is recognised both
+- made firing point of both enemy and player
+- added rigidbody with angular drag-0, gravity scale-0.
+- added tag to enemy
+- bullets hit both player and enemy
+- bullets travel
+- set ammo scale to x-0.04 , y-0.2
+-enemy have double canon?
+- firing bullet(fail)
+- make bullet recognise which kind they are
+- imma firin mah laser!!!!!
+- destroy bullets closer (fixed)
+- decrease spawn rate or increase firing rate. (fixed)
+
+03-11-2020
+
+- moved the shootPlayer to FixedUpdate, will move back if it works
+- made an if statement to shoot at every 5th frame, assuming it works
+- reduced ammo destroy distance to 10, almost near the edge but works
+- still too fast, slowing it to 7th or 8th (slow but not enough), slowing it more to 10th 
+  (debug shows after every 4 seconds, reset counter)
+- ammo was disappearing if camera to far away, fixed it(assuming) by selecting layer as mainScreen.
+- increased ammo size from .04 to .07
+- set to shoot after all anim done.
+- hide panel is off (fixed)
+-bug :- bullets not firing properly, too many bullets at start spawning.
+
+      -> moved shoot code to update, maybe fixed problem, shooting rate is not inconsistent
+	     as in fixed upadate where, it is fast at beginning and slow later but gets fast after sometime
+		 and alternates(maybe)
+	  -> update has steady firing rate, 200 is reached in 3 seconds according to debug unlike 4
+	     seconds in fixed update
+	  ->changing counter to 13th or 14th, reset to 260
+	  ->set ammo png max size to 64
+	  ->changing counter to 16th or 17th, reset to 320
+	  ->changing counter to 22nd, reset to 440
+	  ->changing counter to 25th, reset to 500
+- can build a common function to turn on temp variables in different scripts.e.g- if all Animation Ended
+  , call a function to turn the temp allAnimationEnded trigger in different scripts to on by calling
+  public functions which in turn will turn on temp variables or directly turn variables on. (fix)(optimise)
+- did not configure, when the right door would open (fix)
+- always take the speed of firing body into account. fix the speed of bullet
+- now that the rocket is moving, there are only three bullets, increasing despawning distance, 20
+  bullets are ok now
+- did not configure the stuttering issue.(fix)
+- UfoController is too small, including UfoSpwaner also(just realised the mistake)
+- UFO does not fire bullet.(fixed)
+
+04-11-2020
+
+- added UFO as a prefab, and added it to the game manager.(may move it to the UFOSpawner)
+  moved it.
+- use random to spawn at different places, check if a UFO is already present or not, if present then seek
+  empty location, if not then get to that location.
+- UFO will have common spawn point and travel to designated location.
+- disabling move function of both ufo and player.(fixed)
+- increase the no of ufo in 2nd line.(if works)(increased)
+- make 2 piles, even and odd, if someone is in the upper pile, then lower pile UFO is disabled and
+  vice versa
+- the spawn points would have to move along with the rocket
+- marked the location, now to figue out how to mix all this up
+- the upper points are +2 in y-axis from the lower points
+
+--------------------------------------------------------------------------------------------------
+
+TWO CHOICES
+- Make 4 layers with 2 same layers but different y values
+  -> more transform information
+  -> know how to do it
+- Make 2 layers but add a randomizer to spawn at +2 y - values, or original points
+  -> less transform information
+  -> dont know
+  
+- Going with second
+  -> will have to keep a buffer for the points that already have a UFO
+  -> only 1 layer, index can increment to include both upper and lower
+  -> can have vector3 as array to store position but ill have to manually input points
+  -> how to input +2 y-axis values to buffer?(solved)
+  -> set a counter to alternate between 1 and 2, check if its 2, then add 15 to index of the buffer
+     , no difference in code required other than this
+-------------------------------------------------------------------------------------------------- 
+
+- remove the plane from spawn point prefab.(fixed)
+- check if scene has maximum possible UFOs(fixed)
+- turn on instantiate/ tuen off possible to spawn
+
+  Error
+- <RI.Hid> Failed to create device file:
+ 2 The system cannot find the file specified.
+ 
+04-11-2020
+
+- first try to see if the spawner works or not.
+- fix spawn system, the UFO spawn a little higher than the given points.(fixed)
+  -> plustwoiny was not defined correctly.
+- 1st and 2nd row were at the ame place , y-3.9 , moved 1st to y-4.9.
+- the buffer isn't working properly, upper and lower locations become same.(fixed)
+  -> both are different
+- tag not set to UFOPrefab.(fixed)
+- checking if upper part has a UFO, if it does then do not spawn, does not work properly.(fixed)
+  -> checks works properly, including both uppaer and lower positions, and UFO spawn accordingly
+- turn on spawn counter if all UFO destroyed.(fixed)
+- can set a mechanism to alter the speed of the bullet as the game progresses, making it a little hard (fix)
+- UFO firing speed, -0.15 makes it so that the bullet doesnt leave(fixed), -0.2 works(fixed)
+  -> translate is ok, fix the rotation, fixed the rotation
+  -> firing speed set at 0.15, a little fast
+- bullets travel too fast (fixed temp)
+- decrease bullet spawn rate, spawn rate at 120, firing speed at -0.2 (base level)
+- first test with bullets with moving
+  ->spawn rate-240, fire speed- (-0.05), despawn- 41 (done)
+- fix despwan distance if ufo is moving.(fixed)
+- fix player spawn rate,fire speed, despwan distance (moving).(fixed)
+  -> spawn rate-80, despawn-37, fire speed- 0.13
+- anim state set to 6 speed.(fix)
+- fix UFO bullet despawn rate. (fixed)
+
+06-11-2020
+
+- UFO spawner disabled
+- tested wth spawner, UFO bullets are way too fast to dodge.(fixed)
+- way too much UFO,no space to dodge(fixed)
+  -> spawned no-6, good for now
+- optimise raycast, too long, unecessary.(fixed)
+- animate UFO Entrance.(fixed)
+- made separate code to detect if UFO is destroyed, and decrease counter if destroyed, reset counter
+  if all destroyed and respawn again.
+- if all destroyed, wait for a few seconds to respawn UFO's again.(fixed)
+  -> wait for 2 seconds
+- code for boss entrance.(fix)
+- animating UFO Entrance.
+- attach teleport to UFO when it spawns, use ienumerator.(fixed)
+- create a function to wait for some seconds to spawn next UFO.(fix)(decide pain-taking)
+- speed up teleport animation.(fixed)
+  -> ufo appear as teleport ends, wait for - 1.1f
+- create UFO ID.(fixed)
+  -> send ID to ufoSpawner when it is detroyed to set buffer location to false
+  -> we can reset all to false in the buffer also.
+- make dialogues same length.(fixed)
+  ->txt2,txt4,txt11,txt14,txt15 - 3
+  ->txt1,txt9,txt10,txt12,txt13 - 2
+  ->txt3,txt0, - 1
+  ->txt5,txt6, txt7,txt8, - 4
+- adjust dialogue disappear.(fixed)
+- adjust dialogue for txt13.(fixed)
+
+07-11-2020
+
+- adjust hide dialogue according to dialogue.(optional)(done)
+- UFO Spawner fix it, time to enable it.(fixed)
+  -> UFO spawn after all anim opening ended
+- animator can be accessed with main camera object, no need to explicitly mark it.
+  -> removed reference from bcakgroundScroller
+- animator.play(), normalized time (how much anim has played)
+  ->.25f - first over
+  ->.5f - 2nd over
+  ->.75f - 3rd over
+  ->1f - 4th over
+- using WaitForSeconds instead of checking normalizedTime in update regularly(works great)
+  -> case 1(1.5f) - 0,3
+  -> case 2(3f) -1,9,10,12,13,
+  -> case 3(4.5f) -2,4,8,11,14,15,
+  ->default -5,6,7,
+- if possible, destroy all dialogues after all are said.(fix)(optional)
+
+08-11-2020
+
+- create dialogue if boss appears.(fix)
+- opening right weapon door.(fix)
+- create UI for HighScore.(fixed)
+  -> update score added to set buffer in ufoSpawner
+  -> points - 10, for normal UFO
+  -> created text object for containing Score
+  -> create a separate script for saving high score?
+  -> save system is done
+- create separate scene for opening credit.(fix)(optional)
+- create power ups?(optional)
+- create main menu.(fixed)
+  -> creating menu
+  -> made buttons.
+  -> made settings container.
+  -> make Background for menu.(fixed)
+  -> gear icon for settings.(fix)(not done this)(didnt need this)
+  -> attach button functionality.(fixed)
+- add music and sound.(fix)
+- can add sensitivity settings in menu.(optional)
+- click on start, plays anim, until scene is loaded.(fixed)
+- create pause menu.(fixed)
+- press back key to exit.(fix)
+
+09-11-2020
+
+- Main Menu Features :
+  -> added exit function.
+  -> added progree bar functionality, add progress bar.(fix)(done something else)
+  -> can add screen quotes while loading.(optional)
+  
+10-11-2020
+
+- can make hangar with ship refueling as loading transition.(fix)(done something like that)
+- skip anim if seen at least once.(fix)(done)
+- 1st test.
+  ->works!!
+- build back button, or wait for input of back button to go back.(fixed)
+  ->go for 2nd approach.
+- loading happens fast, no need for loading bar, loading sequence can be blinking refueling (fix)
+  -> loading done then, ready goes green from red.
+  -> play sound to turn ready green.
+  -> loading finished, wait sometime for ready to turn green, ready green then wait a while, load finally
+- no need of volume control, but can replace it with sensitivity controls,no sensitivity controls
+- two separate button for music and sound. (fixed)
+  -> connect sound to script.
+- create sprites.(fix)(done)
+- separate music for both main menu and game?
+- pause menu contains two options :- (fixed)
+  -> main menu
+  -> resume
+  -> restart (maybe)
+- can see score as game starts.(fixed)
+- a variable will check if can play sound effect.(fix)(done)
+- add audio sources.(fix)(done)
+- turned off score container.(fixed)
+- logo :-
+  -> Bahnschrift Condensed
+  -> Music:- size:200,250,c100 , ar:5,10,c0.8 , angle:-10,-100,c0
+             size:200,250,c100 , ar:5,10,c0.8 , angle:-20,70,c0
+			 200-3r, 175-6d
+			 
+80,0.3,45c
+Courier New Bold
+ready - monospace bold, Courier New Bold
+
+12-11-2020
+
+- made all the sprites that i can remember.
+- bullets hit animation.
+- ship destroyed anim.
+- main title height -> 600.
+- added sprites.(can improve)
+
+13-11-2020
+
+- boss fires laser, first charge then fire.(fix)(done)
+- make transition main bckgrnd.(fixed)
+  ->one fades out, while the next is loaded, and process repeats.
+  -> can create code in update to fade out.
+  -> In case of anim, have to create two anim.(done)
+  -> made a fixed bckgrnd so during transition there is a bckgrnd.
+  -> fade in, wait, change bckgrnd, fade out, wait and repeat.
+  -> the code works amazingly!
+- bug:-
+  -> UFO don't properly spawn in their position, they get down from their position.
+  -> may have to change script and do the background move approach.
+- create buttons. text isnt visible properly.(done)
+- loading transition is great.
+
+14-11-2020
+
+- added some main images and transition between them.
+- added toggle function for both music and sound effects.
+- music toggle added to local but how to reference in next scene?
+  -> works good but the music restarts every time.
+  
+15-11-2020
+
+- add weapon sound effect to the gun and not the bullet, same with everything.
+- score container appears as the game starts, i.e. after all anims.
+- collision detection can be done so that, it only checks for collision when it is near the rocket,
+   i.e. check for collision of ammo of player or enemy when it is within the area of contact, define
+   a box and when the bullet enters it, start for checking collision then.(fix)(optimisation)
+- Boss can spawn Landmines type thingy using teleport if, movement script is changed to bckgrnd move,
+  telport wont go to waste, also increase teleport anim.(fix)(didnt do it)
+- dont know if i can add retart functionality to the game for now, dont know how to do it.(fix)
+- sprite:- pause, resume, restart, main menu, pause icon.(done)
+- add back input functionaity.(fixed)
+- pause logic works.
+- removed exit from the pause menu.
+- can have two of the main bckgrnd, and if camera reaches the point, then move the first to spawnPoint,
+  while the second is in camera.(fixed)(done)
+  -> working better than expected, had to increase size of bckgrnd to 1.2, so span distance = 12.96 now
+  ->commenting out extra code from earlier, maybe save the detect system.
+- bckgrnd still dont move.(fixed)
+- position raycast according to bckgrnd.(fixed)
+
+16-11-2020
+
+- fix shoot script of both.(fix)
+- did not move raycast, but adjusted the detect boxes.
+- bckgrnd moves now.
+- dialogue is starting trouble again, its good, dialogue again was turned off.(fixed)
+- fixed the firing script.
+- can add a progress system.(optional)
+- added exit button to pause panel.
+- loading and unloading works perfectly.
+- can have a separate script just for loading.
+  -> dont destroy on load and transition in script.
+  -> scene 0-1 :- REFUELING
+  -> scene 1-0 :- LOADING.
+- added the bcak button functionality to credits in main menu.
+- just have to play loading anim until loading is done then, unload the current level will happen 
+  automatically.
+- can check for button press to start loading/refueling anim.
+- duplicates are being made.(fixed)
+- loading works perfectly.
+- change UFO entrance anim.
+  -> increase x and y of position by 0.1f, until they reach the designated position.
+  -> it somewhat works, but the speed is too much, decreasing by 0.01f
+  
+18-11-2020
+
+- fix the shooting script, when time scale is 0f.(fixed)
+- fix everything that works when time scale is 0f.(fixed)
+  - moved code to FixedUpdate.
+- increase UFO Speed.(fixed)
+  -> speed is ok for now.
+- set spawn points for UFO according to locations in screen.(fixed)
+  -> y = 2 is enough for every UFO, on the 2nd row also. This will remain constant.
+  -> spawn point is same, but can make a vector3 array to contain co-ordinates on how to move.
+  -> Middle :-  
+              - 0, 0.8, -0.8
+			  - new vector3(0f,2f,0f)
+			  - position.x is not calculated
+  -> Left   :-  
+              - x < (-0.8)
+			  - new vector3(-2f,2f,0f)
+			  - transform.position.x >= realLocation.x
+			  - transform.Translate(0.05f, 0f, 0f); , in both else if and else.
+  -> Right  :-  
+              - x > (+0.8)
+			  - new vector3(2f,2f,0f)
+			  - transform.position.x <= realLocation.x
+			  - transform.Translate(-0.05f, 0f, 0f);, in both else if and else.
+- UFO arrive at location but slide down or up after few seconds.
+  -> not an issue, moving in editor was issue. only use x in editor.
+- transform.position.x >= realLocation.x, can shorten this with a local bool and inverting it
+  whenever required, or it stays the same.
+- spawn point is not working properly.(fixed)
+  -> toggleLeftOrRight was set to 0.5 and not to 0.05.
+- toggleLeftOrRight = 0 is not working properly;
+
+19-11-2020
+
+- incraese rocket shoot speed.(fixed)
+- testing toggle for 1.
+  -> works good.
+- toggle test for 0 also works well.
+- do boss fight.(fix)(done)
+- the lower 2 layers have to add 4 instead of 2, as they are in screen if 2 is added.
+- bug: the enemy ships werent going to location and moving forward without stopping, if they were
+       in the lower 2 layers and tempToggleY was set to 4.
+    -> the logic is flawed, addd same digits, i.e. 2 so increment or decrement happens in such a way,
+       that the two if and else-if statements are never reached, also I have calculated them as they
+       are passed to the UFOController script and not again, so reached x is never printed, LOL. You
+       can try it, so the solution is to manually calculate evrytime by writing condition in every if
+       and else statement or calculate it every time I enter the first if statement.
+- gettospawn gets executed too many times.(fixed)
+- enemy gets to their location properly, but notAtLocation doesnt work properly.(fixed)
+  -> should be greater than and not less than.
+- UFO shoot after getting to location.(Fixed)
+- skip anim if seen at least once.(fix)(done)
+- can set the leader canon on pedestal beneath and rotate the pedestal when firing.
+
+20-11-2020
+
+- set canon location to (-0.64) in anim after lowering down. Original location is (-0.33) (fix)(done)
+- do boss script.(fix)(done)
+- increase boss shoot speed, get a local variable to keep speed.(fix)(done)
+
+----------------------------------------------------------------------------------------------------
+ CONCEPT
+  :- the canon float beneath the UFOBoss, and when the laser fires the canon move out of the way, or
+     sideways.
+  :- the second gun goes underways the first one.
+----------------------------------------------------------------------------------------------------	 
+
+- the canon container has different values in editor and debug.log.(fixed)
+- the sprites don't go so well for screen. i.e. Main Menu, Reloading....(fixed)
+- change UFOBoss x position to 0f from 2f. (fixed)
+- UFOBoss doesnt fire from 2nd point only after animation is enabled, without anim, it works good.(fixed)
+  -> animator isnt the issue, it doesnt fire at all after first time.
+  -> index was set to wrong thing, my fault.
+- enemy shoot speed is 120, boss set to ...., player to 70
+  -> the boss can have burst firing for few seconds and then cool off.(fix)(done)
+  -> make other weapon system for Boss.(fix)(done)
+  -> Boss fire rate set to 10 for starters, decrease to increase speed.
+- decrease ammo despawn distance.(fixed)
+  -> 10f is perfect for both
+- set code for boss to appear.(fix)(done)
+- Boss fight :-
+             -> Burst fire for 3 seconds.
+			 -> fire missiles for at least same.
+			 -> wait for at least 5 seconds.
+- can make a separate class in UFOController for Boss.(fix)(done)
+  -> it would be better to make a different script.(yeah, perhaps this would be best.)
+  -> damage taken, fire rate (burst rate), missiles spawn, laser spawn,lower weapon, follow player or
+     sway a little, progress system.
+- progress system based on score, a global public variable for difficulty.
+
+22-11-2020
+ 
+BOSS:-
+-----------------------------------
+- Boss approaches player and continues to fire for 3 seconds, then turns away from the player, and does not
+  shoot at the player for approx. 5 seconds, recharges then, shoots back at the player.
+  -> did the burst thing.
+  -> boss takes damage.
+  -> boss has force field when firing, make anim.(fixed)
+  -> made the shield.
+- the sprites are not at their positions in game. (fixed)
+- prefab cant be assigned a gameobject from the scene.(fixd)
+  -> the bar works.
+  
+23-11-2020
+
+- can make a single anim for both appearing and disappearing of the Boss main shield.(fix)(done)
+- canon charge for laser anim.(fix)(done)
+  -> laser scale - 120 , position y - (-37.5)
+  -> shoot laser turned off.(fixed)
+  -> set laser position.(fix)(done)
+  
+24-11-2020
+
+- canon laser:- 
+  -> draw a ray from the outer lines to detect hit from laser, both sides.(fixed)
+  ->can use isShooting for laser also.(fixed)
+  -> can add anothet int to waitforgivenseconds for controlling recharge time or something else.(fix)(done)
+  -> code the recharge mechanism.(fix)(done)
+  -> shoot, turn off shield, shoot, turn off shield, recharge laser, shoot laser, turn off shield,
+     shield turns on, shoot , turn off shield, fire missiles, turn on shield and process repeats. 
+  -> canon rechargetime should be short, like 1.5 seconds .(fix)(done)
+  -> shield turns on - sound is genrator turning on, electire type, electric car increasing power, acc.
+  -> can turn off rotate weapons as the shield recharges.(fix)(not needed)
+  -> shield immediately ends, has to be more than 3 seconds.(fixed)
+  -> boss gets heavier as weapons increases.(fix)(didnt do it)
+  -> drawRay length 8 is enough and damage 5 is ok.
+- boss follows player.
+- cant escape boss bullet if 5 seconds.
+  -> either slow the boss or decrease fire rate.
+  -> if the boss is slowered, then while fire, the boss will be slow and then when shields are down, 
+     boss will be fast.(fix)(didnt do it)
+  -> can provide power up to shield from Boss.
+  -> when firing again after recharge, wait for shield to go up.(fix)(done)
+  -> set path for UfoBoss to come down.(fix)(done)
+- can setup anim for first occurence of Boss Ship a.k.a. War Ship.(fix)(didnt do it)
+- health bar appears when boss comes down.
+- player can move during dialogue.(fix)(feature)
+- door opens after defeating first boss, and taking down some ships.
+- change bckgrnd to dark, so to see bullets.(fix)(done)
+- increase boss health, doesnt have to be that strong, but as a first boss has to be strong(fix)(done)
+- for some reason the laser seems to want to go downwards after some time by itself.(fixed)
+  ->check for animators. turning off anim does not do anything.
+  -> turns out i have already written code for it in wait for given seconds.
+  
+25-11-2020
+
+- make a int array with shoot, fire, fire missile as index and value as how many times it happens.(fix)(done)
+  -> cam also use this to store how many bosses killed, so as to increase difficulty with progress.(fix)(done)
+- some algorithm for firing weapons:-
+  -> intToggle[0] -   3           -> intToggle[0] -   2          -> intToggle[0] -   2
+     intToggle[1] -   1              intToggle[1] -   1             intToggle[2] -   2
+     intToggle[0] -   1              intToggle[2] -   1             intToggle[0] -   2
+     intToggle[2] -   2              intToggle[0] -   1             intToggle[1] -   1
+  -> baseline is that :-
+     (-) First Boss will only shoot bullets.
+	 (-) Second Boss will shoot bullets as well as lasers.
+	 (-) Can introduce missiles at third Boss or later at 4th or 5th.(assuming people will play that long)
+     (-) Before shooting laser, there should be at least be 2 times bullets be shot, i.e. 2-3 times
+     (-) Missiles can be shot, maximum 2 times, at any given time, i.e. 1-2 times
+	 (-) Limited no. of missiles can only be shot or for some intervals. (5 sec with 0.1 in between)
+	     - use intToggle2 for counting missiles.( 10 missiles)
+	 (-) Laser could only be shot 1 time, at any given time, i.e. 1 time
+	 (-) reset intToggle2 after a boss dies.
+	 (-) can laser and missile fire alternatively? If so then can make a function to check the progress.
+- may need an extra script for missile navigation.(fix)(done)
+  -> can add a class down the boss script for missile nav.
+- code to shoot be random every time or be fixed for a boss?
+- different point for different boss.(fix)(done)
+- can make different function for progress system, as most code will be repeated.(fix)(done)
+- made a progress system.
+  -> test the system(fix)(done)
+  
+28-11-2020
+
+- testing the progress system
+  -> turning off UFO spwner.(fixed)
+  -> set boss defeated to 0.
+     (-) goes well, shield work properly, weapon system is ok.
+  -> set boss defeated to 1 || 2.(fixed)
+     (-) shield turned on, nothing happened, boss defeated is printed, boss defeated printed again, bullets
+	     start to fire, shields on,bullets continue, boss defeated, bullets continue, this happens most fo 
+		 the times, causes the bullets to fire morw than longer.
+     (-) laser fired only once.
+  -> doesnt work well.
+     (-) soemtimes doesnt wait for recharge, just keeps firing.
+  -> turn on collider for player.(fixed)
+  -> after shooting most system are not recharging, and firing continuosly, will have to introduce an int in 
+     WaitForSeconds to know which weapon was fired before recharging.(fixed)
+  -> after shooting laser, recharge does not happen normally, shield stays on and bullets start to shoot, 
+     have to turn off anim just like in bullet part of WaitForSeconds.(fixed)
+	 (-) moved the recharge code to WaitForSeconds(4)
+  -> shooting laser another time does not work properly, the laser is not extended.(fixed)
+     (-) laser in position
+  -> laser shot after shooting bullets only once.(fixed)
+     (-) after shooting laser, bullets shoot, bullets are enough, switch to laser, laser shoot.
+	 (-) in progress system, if else was set to 1, turned to 2.
+  -> boss defeated set to 2 also works well.
+
+- make anim for rockets and script also.(fixed)
+  -> can attach ammo script to rocket also.
+- shield is still up when laser is fired. (fixed)
+
+29-11-2020
+
+- adjust the no. of missile fired.(fixed)
+- if boss makes appearence, no of UFO spawned should be low, and outside of Boss's range.(fixed)
+
+01-12-2020
+
+- fix look at. (fixed)
+
+02-12-2020
+
+- increase missile speed.(fixed)
+  -> 4f seems good.
+  -> rocket size - X: 0.21 ,Y: 0.315
+- fix instantiating missiles. (fixed)
+
+03-12-2020
+
+- move towards is better for missile.
+- after firing missile,
+  -> boss begins to tilt and only fires bullet afterwards.
+  -> boss fires laser correctly.
+  -> boss begins to tilt, fires bullets, fires missiles, continues to fire missile.
+  -> missile counter does not reset.(fixed)
+ (-) increasing missile speed. (did not fix)
+ (-) making the UFO parent of missile may be the problem.
+  -> removed missile from parent, works good, UFO does not tilt, but continues to fire while missile are still 
+     going, shields, bullet fire, shields, missile fire but only 2 and missiles are fired more than 10.
+  -> laser does not work properly. (fixed)
+  -> after shooting missiles, other system gets activated immediately.
+     => fires missile, shields on but laser is fired, shields off, laser continues to fire, laser stops, shields,
+	    bullets, missile count is not reset. As missile count not reset, index reaches +10.
+	 => creating a problem(fixed)
+  -> laser shot,but shields were on. Shields remain on during both Boss Defeated 1 and 2
+- the system works fine except the lasers!!
+- remove the serializable field.(fix)
+
+04-12-2020
+
+- 10 missiles may be a bit of excess.(fixed)
+- instantiate Boss UFO and give it a name to identify it and access it for spawning UFO.(fixed)
+- Build a progress system for UFOSpawner.
+- make wave of UFO's for the Progress System.
+
+05-12-2020
+
+- dont disbale the polygon collider except disable the take damage function when shields are on for Boss.(fix)(done)
+- as boss follows player, enemy UFO will overlap, even if they are set to avoid Boss area when Boss follows 
+  the player. So, set the enemy UFO spawn point downwards below Boss, and let Boss recharge while doing nothing,
+  Boss recharges back as soon as Enemy UFO are destroyed.Can regenerate the health of Boss when enemy UFO appear.
+  Reset Boss position to, x:0/y:4 , when Boss is regenerating health.(fix)(optional)
+- after 3rd bullet shoot, shields off, shields on, goes to recharge point.
+- regenerate works.
+- shields are on during regenerate.(fixed)
+- set a switch to turn off shields when required.(fix)
+
+07-12-2020
+
+- spaw point : upper - 2 -> 17,18,19 / index -> 2,3,4
+               lower, lower - 2 -> 24,25,26,27 / index -> 9,10,11,12    ,24,25,26,27,28
+- 10 for recharge seems too long, need to shorten it up.(fix)(done)
+- goes to recharge location, shields off, starts to shoot, follow player, shields on anim does not play but 
+  shields off anim does play.(fixed)
+- spawn UFO underneath Boss when the BOss regenerates.(fix)(done)
+- transition from dialogue to main game causes possibleToSpawn be called too many times.(fix)
+- fixed the enemy wave code and Boss spawn also works well.
+- mix the bcgrnd images on BackGround Scroller.(did not need to fix)
+- feel like dialogues are too long.(fix)(done)
+- make Boss and enemy system progression different.(fixed)(think so)
+- when game over, show current score of the player.(fix)(done)
+- high score glitch.(fixed)
+- (enemyWave % 6==0) this does not function properly, as the starting value is 0.(fixed)
+- a single variable for progression and a different variable for updating the progression variable. Maybe need 
+  a variable to check if its the first wave.
+- Boss appears after every 8th wave and progree occurs after every 6th wave.
+- enemy isnt shooting.(fixed)
+- also increase Rocket fire rate.(fix)
+- progress system works but not as intended :
+  -> before spawning UFO, Score and FR Holder start to increase greatly until all the 6 UFO have spawned
+  -> situation worsened and enemy wave also increases now. Get back from waitseconds in ufospwner.(fix)
+----------------------------------------------------------------------------------------------------------------
+Dialogue :
+
+Jack : Almost felt like we were goners there, although I dont feel the same can be said about most of our group..
+Roger : Well, we are not out of the blue yet,so don't start celebrating early, try contacting H.Q. , and request
+        an update on our situation.
+Jack : Comms seem to be down, give me some time.
+H.Q. : An...e out .h.re? C.. a.y.ne ..ar us.
+Jack : Come on, come on...
+H.Q. : Anyone out there? Can anyone hear us?
+Jack : Got it.
+Roger : This is rocket R0001, go for Eagle Eye, over..
+H.Q. : Roger !?!? Thank God, you are ok! Listen, we don't have much time, there are still some patrols on your 
+       tail, proceed to rendezvous, everyone will meet you there.
+Jack : Here we go again..
+
+Weapon Door stuck.
+
+Jack : Uh...Oh... The weapon doors are a bust, I will need some time to fix these. Try not to ruin My Ship, will you?
+Roger : I got this, Ok!! Have some faith in me. Come on now!!
+
+Text :
+- Line 1 :
+- Line 2 : 8
+- Line 3 : 0,1,7,
+- Line 4 : 5,
+- Line 1/3 : 2,3,6,
+- Line 1/4 : 4,
+---------------------------------------------------------------------------------------------------------------------
+
+08-12-2020
+ 
+- Change Wave : true          Change Wave : F              Change Wave : T             Change Wave : T
+  Enemy wave : 0              Enemy wave : 5               Enemy wave : 17             Enemy wave : 39
+  Total enemy spawned : 1     Total enemy spawned : 6      Total enemy spawned : 6     Total enemy spawned : 6
+  Score Holder : 25           Score Holder : 145           Score Holder : 235          Score Holder : 400
+  FR Holder : 100             FR Holder : 260              FR Holder : 380             FR Holder : 600 
+- doneOnce worked but can be optimized.(optional)
+- change fire rate of player.(fix)(done)
+-----------------------------------
+NOTE :Lower the fire rate, faster they will fire.
+-----------------------------------
+- stop regenerate after every enemy is destroyed.(fix)(done)
+
+09-12-2020
+
+- can improve the getToSpawnPoint in UfoController using MoveTowards. (fix)(done)
+- after coming out of recharge, can improve code for firing weapon that was fired before the recharge.(fix)(done?)
+- check the regen code for boss.(fix)(done)
+- check if Boss takes hit when shields is on. (fix)(done)
+  -> Pollygon collider is always off.(fixed)
+- Are You Sureis not written properly.(fixed)
+- the icon still dont do nothing.(fix)
+- Refueling and Loading are small, a UFO spawned outside of screen.(fixed)
+- the No button doesnt work properly in main menu.(fixed)(both Yes and No)
+- High Score doesn't show properly.(fixed)
+- fix Loading png.(fix)(done)
+- cap frame rate.(fixed)(at 60)
+- left right edges are cut off in build version.(fix)(done)
+  ->made a fixed resolution.
+
+10-12-2020
+
+- fixed screen resolution with setResolution.
+- skip intro if seen once.(fix)(done)
+- can toggle the music and sound effect in gameManager and check it to toggle the necessary thing.(fix)
+- Boss Bugs :-
+  -> Boss doesnt take damage over all.(fixed)
+  -> Boss takes damage when it recharges.(fixed)
+  -> Boss does not comes out of recharge after all destroyed.(fixed)
+  -> there is no 2nd wave of enemy during Boss health regeneration.(fixed for 0)
+  -> Health bar does not disappear after Boss destroyed.(fixed)
+  -> MissingComponentException: There is no 'PolygonCollider2D' attached to the "UFOLeader(Clone)" game 
+     object, but a script is trying to access it. line 214, bossScript (fixed)
+  -> Boss defeated increased.(good)
+  -> No enemy appear for 2nd Boss.
+  -> Boss appears, sometimes bckgrnd does not spawn correctly.
+  -> after defeating every enemy, the Boss just gets bigger and goes out of screen, doing nothing, no weapons
+     no shields.(fixed partially)(fixed)
+	 (-) Fixed Boss, but not tested with enemy.
+  -> still no second wave of enemy.(fixed for 0)
+  -> ufo not spawning even if total ufo spawned is 0.(fixed for 0)
+  -> 2nd Boss appears but no enemy, no enemy during regenerate mode also.
+  -> after 2nd Boss, enemy appear but after that nothing happens.
+  -> Ufo also dont spawn correctly normally also.(fixed partially)
+  -> Ufo does not return to proper scale and position, also the shield never turns off.(fixed scale)(fixed position also!!)
+  -> intToggle2[5] gets way too high now also.
+  -> shield turns off/on spontaneously, shields are on but still taking damage.(fixed partially)
+
+11-12-2020
+
+- Boss bugs :
+  -> 2nd wave didnt come, can shoot Boss while coming bcak to position, shields, Boss shoots, shields , goes 
+     back to recharge
+  -> after rechrage, The toggle counter just increases without stopping for recharge, and Recharge point reached
+     is printed.
+  -> Boss works perfectly without UFO.
+  -> pressing button several times, toggles on/ off the dialogue but does not progress
+  -> isShooting was causing the problem in regen health, replaced it with doneOnce. Check code again.
+
+12-12-2020
+
+- Boss Bugs:
+  -> 2nd wave enemy doesnt come, SpawnWhileBossRegenerates is turned off after 1st recharge.
+  -> 1st wave when boss recharges is good, but after 1st wave, boss goes back to original position, 2nd wave
+     comes and buffer is filled way more than usual.(fixed for 0)
+- spawn doesnt happen properly, an extra is added but never spawns.(fixed)
+  -> 26 present in Buffer but didnt spawn.
+  -> always +1 UFO.
+- the buffer system doesnt work that great but the spawn happen correctly, flush buffer before another wave.(fixed)
+- Boss 0 works fkin great with regen. Fixed everything and works with enemy.
+- Buffer resets after every wave.
+- Test regen Code with other Boss(fix)(done)
+
+13-12-2020
+
+- Boss 1 works well with regen code.
+- the laser is behind the weapon door of rocket.(fix) (is this really necessary?)
+- Boss fires rocket, and starts firing immediately.(can fix)
+- remove serializable field.(fix)
+- I have already made code if weapon right is free, good for me!!
+- killing Boss spawns more Boss.(fixed)
+- make dialogue for right weapon free.(fix)
+- Boss defeated jumps to 3 after 1.(fixed)
+-----------------------------------------------------------------------------
+- In Boss script, ufoDefeated is executed 2 times after the Boss is destroyed, which should not be, only happens
+  after defeating 2nd boss, 1st boss defeated goes perfectly.
+  after defeating 2nd boss, 1st boss defeated goes perfectly.
+------------------------------------------------------------------------------
+- the slider value doesnt get reset.(temp fix)
+  -> happens when both Rocket canons are firing, dont think will happen unless fire rate is too high.
+  -> moved code to start.
+- UFO are over spawning.(fixed)
+- check early return tests.(they are correct)
+
+14-12-2020
+
+- rocket size seems good. test within game rocket fire. 
+- modified component was not set to prefab, rocket works good on Boss.
+- added yield in missile code to wait ofr some time after firing missile.(tweak it)
+  -> 6 should be good.
+- spawn powerups in ufo spawn locations.(fix)
+  -> as enemy spawn increases with 6th wave, spawn powerup between 6th and 8th. 4th-6th will be little early.
+  -> can add powerup to ammo script.
+  -> -10 fire rate each time one is picked up, until 20 is reached, 10 will be for super boost if any.(fix)
+  -> add rigidBody and let them free fall or place a script and check for collision in them.(fix)(separate script for now)(done)
+  -> activate powerup sound if player gets any, from rcktController, separate sound source from Powerup 
+     is not required.(fix)(make code also)(done)
+  -> OnTriggerExit works even if Player moves away from the PowerUp.
+- Boss does not spawn properly again.(fixed) (maybe)
+- search which gameObject has "Weapon" tag.(fix)
+
+15-11-2020
+
+- ammo works properly.
+- Boss spawns correctly for now.
+- can check if player grabbed the powerup or missed it, and then spawn the powerup again accordingly.(fix)
+- wait for some seconds before firing missile, so player knows missile are coming.(fixed)
+  -> can do the same for laser, and add some anim to show laser charge in this.(fixed)
+- fix inttoggle /missile code.(fix)
+- does not launch rocket properly.(fixed)
+- fix Boss ammo script.(fixed)
+- cant see missile door properly, move it forward.(fixed)(moved upaward a little)
+- make a Laser charge anim.(fix)(already made it)
+
+16-12-2020
+
+- using wpnIndexBeforeRchrge to store index if laser will be fired.(did not need it)
+- after firing first wave of missiles, 2nd wave just keeps firing.(fixed)
+  -> 2nd wave always fire after 1st wave.
+- shield anim during missile.(fixed)
+- Laser fires perfectly.
+- nothing fires properly now.(fixed)
+  -> without missile, everything is good.
+  -> shields off called 2 times.
+  -> the laser code is fking up.
+- test sequence went great.
+- test power up spawn.(fix)
+- dialogues.(fixed)
+- optimize if possible.(fix)
+- add sound.(fix)(Done)
+- build.(fix)
+
+18-12-2020
+
+- turn on rocket collider and fire rate.(fix)
+- skip dialogue button.(fixed)
+  -> skips to last dialogue with weapon door open.
+  -> make png skip.
+- Boss explosion and enemy explosion works.
+
+19-12-2020
+
+- 1000000 /  9999999
+- did game over screen.
+- skip button works.
+- fix save and load issue.(fixed)
+- hard to gauge rocket's health.
+- health bar works.
+- dialogues fixed but no Boss dialogue.
+- pause game when loading. No need,loading works great.
+- destroyed enemies should not shoot.
+- very difficult to evade bullets side wards. Reduced polygon collider to Body of the ship only.
+
+04-01-2021
+
+- should probably remove the skip button.(fix)(done)
+  -> will not properly blend in with voice.
+- can make events in animation to call function for playing on and off sounds of doors.(fix)(done)
+  -> make a separate script that contains both animation sounds for player and enemy.
+  -> can reference audio sources in management script.
+  ->animation only for Enemy, did the player in its own script.
+  
+05-01-2021
+
+- PowerDown Too Long.
+- mechanical crane moving.
+- customize dialogue adio play for special Dialogues.(fix)
+  -> tweak the settings.
+  
+06-01-2021
+
+- changed health bar color for rocket.
+- object destroyed sound effect.(fix)(done)
+- create rocket destroyed anim.(fix)(done)
+- music switch works perfectly.
+- set bckgrdmusic volume.(fix)(done?)
+
+09-01-2021
+
+- game goes on in the bckgrnd after clicking on main menu.(fixed already)
+- power up sound.(fix)(done)
+- next dialogue button does not works that properly.(fixed)
+
+12-01-2021
+
+- making final build, if any changes is to be made, will do or move forward.
+- music script make static, crating problems.(fix)
+- In main menu, canvas loading screen components cannot be seen.(fix)
+- In main menu, under music toggle button and sound toggle, music script is missing.(fix)
+  -> make functin to acces music script in main menu script.(fix)
+  - make toggle mechanism in main menu also.(fix)
+  
+13-01-2021
+
+- Music and Sound icon doesnt turn off if turned off previously in main menu.(fix)
+- reloading game scene does not work well.. refueling and loadinf both appear.(fix)
+
+15-01-2021
+
+- Boss defeated is 3.
+- Ufo and Player Fire Rate set to low, Default -> Ufo- 80/ Player-70
+- Build again.(fixed)
+
+17-01-2021
+
+- Built and Uploaded, Made an Ad Also, uploaded it to YT.
+  Untill next Time.
